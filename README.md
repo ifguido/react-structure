@@ -1,27 +1,66 @@
-# React + TypeScript + Vite
+# React + Tailwind + Vite + Typescript Base Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is bootstrapped with Vite, and utilizes React version 18.2.0, Tailwind CSS version 3.3.3, and TypeScript version 5.
 
-Currently, two official plugins are available:
+## Dependencies:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- react-router-dom
+- react-dom
 
-## Expanding the ESLint configuration
+## Project Structure:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```plaintext
+src/
+|-- assets/                 # Static assets for the frontend
+|-- components/             # Global system components
+|-- context/                # Global system contexts
+|   |-- AuthContext/        # Context for global auth management
+|   |   |-- .context.ts     # Interface definition for createContext
+|   |   |-- .provider.ts    # Provider implementation
+|   |   |-- useAuthContext.tsx # useContext hook, with validation
+|   |-- CoreContext/        # General project configuration
+|       |-- .context.ts     # (similar structure as AuthContext)
+|       |-- .provider.ts
+|       |-- useCoreContext.tsx
+|
+|-- core/                   # Core system utilities (Amplitude, Axios, Storage, etc.)
+|   |-- Storage/            # localStorage definition, with fallback to memory storage
+|
+|-- hooks/                  # Custom hooks across the web app
+|-- utils/                  # Helper functions across the system
+|-- modules/                # Separate sections of the system, e.g., Auth, Dashboard, Settings
+|   |-- Auth/
+|   |   |-- components/
+|   |   |-- context/
+|   |   |-- hooks/
+|   |   |-- modules/
+|   |   |-- Auth.tsx        # Contains routes for this module
+|   |-- Dashboard/          # (similar structure)
+|   |-- Settings/           # (similar structure)
+|
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Lazy Loading:
+
+Routes are loaded lazily, i.e., they are not loaded until they are requested.
+
+## Auth Context:
+
+Within the Auth Context, there is a component called `ProtectedRoute` which navigates to a specified `redirectPath` if the user is not logged in. This means that all protected routes or modules should be encapsulated within a `ProtectedRoute`. This is demonstrated in the `app.routes.ts` file as shown below:
+
+```javascript
+<BrowserRouter>
+  <Routes>
+    <Route
+      path="/*"
+      element={
+        <ProtectedRoute>
+          <DashboardPage />
+        </ProtectedRoute>
+      }
+    />
+    <Route path="/auth/*" element={<AuthPage />} />
+    <Route path="*" element={<p>There's nothing here: 404!</p>} />
+  </Routes>
+</BrowserRouter>
+```

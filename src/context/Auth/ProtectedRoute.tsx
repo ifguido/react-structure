@@ -1,12 +1,12 @@
 import { Navigate } from "react-router-dom";
 import { FCC } from "@core/types";
-import { useAuth } from "./useAuth";
+import { useAuthContext } from "./useAuth";
 
 export const ProtectedRoute: FCC<{ redirectPath?: string }> = ({
   children,
   redirectPath = "/auth",
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   console.log(user);
 
